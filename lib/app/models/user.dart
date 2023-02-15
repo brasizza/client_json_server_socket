@@ -65,13 +65,4 @@ class User {
   int get hashCode {
     return id.hashCode ^ name.hashCode ^ email.hashCode ^ password.hashCode;
   }
-
-  User update(Map data) {
-    return copyWith(
-      id: data['id'] ?? id,
-      name: data['name'] ?? name,
-      email: data['email'] ?? email,
-      password: data['password'] ?? password,
-    );
-  }
 }

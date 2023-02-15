@@ -69,10 +69,16 @@ class UserController extends Cubit<UserState> {
           emit(state.copyWith(status: UserStateStatus.loading));
           final indexUser = users.indexWhere((user) => user.id == data['id']);
           if (indexUser != -1) {
-            final user = users.elementAt(indexUser);
-            user.update(data);
+            final myUser = users[indexUser];
+            users[indexUser] = myUser.copyWith(
+              id: (data['id'] ?? myUser.id),
+              name: (data['name'] ?? myUser.name),
+              email: (data['email'] ?? myUser.email),
+              password: (data['password'] ?? myUser.password),
+            );
+
+            emit(state.copyWith(status: UserStateStatus.loaded, users: users));
           }
-          emit(state.copyWith(status: UserStateStatus.loaded, users: users));
         }
       } catch (e, s) {
         log(e.toString(), error: e, stackTrace: s);
