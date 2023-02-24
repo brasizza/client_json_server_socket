@@ -28,7 +28,7 @@ class UserController extends Cubit<UserState> {
 
   void bindSocket({required SocketClient socket}) {
     socket.addChannel('POST', tableName, (response) {
-      final user = User.fromMap(response['data']);
+      final user = User.fromMap(response['payload']);
       try {
         if (!state.users.contains(user)) {
           emit(state.copyWith(status: UserStateStatus.loading));
@@ -44,13 +44,13 @@ class UserController extends Cubit<UserState> {
     });
 
     socket.addChannel('DELETE', tableName, (response) {
-      final deletedId = (response['data']);
+      final deletedId = (response['payload']);
       try {
         final users = state.users;
         if (users.isNotEmpty) {
           emit(state.copyWith(status: UserStateStatus.loading));
 
-          final indexUser = users.indexWhere((user) => user.id == deletedId);
+          final indexUser = users.indexWhere((user) => user.id == deletedId['id']);
           if (indexUser != -1) {
             users.removeAt(indexUser);
           }
@@ -62,7 +62,7 @@ class UserController extends Cubit<UserState> {
     });
 
     socket.addChannel('PUT', tableName, (response) {
-      final data = (response['data']) as Map;
+      final data = (response['payload']) as Map;
       try {
         final users = state.users;
         if (users.isNotEmpty) {
